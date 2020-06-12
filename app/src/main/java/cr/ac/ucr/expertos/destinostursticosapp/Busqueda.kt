@@ -100,7 +100,7 @@ import kotlinx.android.synthetic.main.fragment_busqueda.*
         }
 
         private fun showDialog() {
-            val dialogFragment = Resultados(this)
+            val dialogFragment = Resultados(this, spDestino.selectedItem.toString())
             fragmentManager?.let { dialogFragment.show(it, "signature") }
         }
 

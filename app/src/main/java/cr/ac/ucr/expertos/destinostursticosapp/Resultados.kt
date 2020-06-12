@@ -1,20 +1,25 @@
 package cr.ac.ucr.expertos.destinostursticosapp
 
-import android.app.Activity
+import android.app.PendingIntent.getActivity
+import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.activity_resultados.*
+import kotlinx.android.synthetic.main.fragment_busqueda.*
 import org.json.JSONArray
 import java.net.HttpURLConnection
 import java.net.URL
 
-class Resultados(private val callbackListener: CallbackListener) : DialogFragment() {
+
+class Resultados(private val callbackListener: CallbackListener, val destino: String) : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,11 +42,7 @@ class Resultados(private val callbackListener: CallbackListener) : DialogFragmen
 
         //var listView = findViewById<ListView>(R.id.listview);
 
-
-
-
-        val url = "https://mysafeinfo.com/api/data?list=presidents&format=json"
-
+        val url = "http://10.0.2.2:8000/api/atractivos/"+destino+"/b/c/d"
         AsyncTaskHandleJson().execute(url)
     }
 
@@ -68,18 +69,22 @@ class Resultados(private val callbackListener: CallbackListener) : DialogFragmen
 
     private fun handleJson(jsonString: String?) {
         val jsonArray = JSONArray(jsonString)
-        val list = ArrayList<President>()
+        val list = ArrayList<DestinoTuristico>()
         var x = 0
 
         while (x < jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(x)
 
-            list.add(President(
-                jsonObject.getInt("ID"),
-                jsonObject.getString("FullName"),
-                jsonObject.getString("Party"),
-                jsonObject.getString("Terms")
-            )
+            list.add(
+                DestinoTuristico(
+                    jsonObject.getInt("id"),
+                    jsonObject.getString("nombre"),
+                    jsonObject.getString("imagen"),
+                    jsonObject.getString("lugar"),
+                    jsonObject.getString("ubicacion"),
+                    jsonObject.getString("descripcion"),
+                    jsonObject.getString("clase")
+                )
             )
 
             x++
@@ -94,20 +99,23 @@ class Resultados(private val callbackListener: CallbackListener) : DialogFragmen
         listview.adapter=customAdptor
 
         listview.setOnItemClickListener{ parent, view, position, id ->
-            Toast.makeText(getActivity()?.getApplicationContext(), "You Clicked:"+" "+list.get(position), Toast.LENGTH_SHORT).show()
+            //Toast.makeText(getActivity()?.getApplicationContext(), "You Clicked:"+" "+list.get(position), Toast.LENGTH_SHORT).show()
+
+            val dialogFragment = Detalle(list.get(position))
+            fragmentManager?.let { dialogFragment.show(it, "detalle") }
         }
     }
 }
 
-class CustomAdptor(private val context: DialogFragment, private val lista: ArrayList<President>): BaseAdapter() {
+class CustomAdptor(private val context: DialogFragment, private val lista: ArrayList<DestinoTuristico>): BaseAdapter() {
     //Array of fruits names
     //var names = arrayOf("Apple", "Strawberry", "Pomegranates", "Oranges", "Watermelon", "Apple", "Strawberry", "Pomegranates", "Oranges", "Watermelon")
     //Array of fruits desc
     //var desc = arrayOf("Malus Domestica", "Fragaria Ananassa ", "Punica Granatum", "Citrus Sinensis", "Citrullus Vulgaris", "Musa Acuminata", "Actinidia Deliciosa", "Solanum Lycopersicum", "Vitis vinifera", "Citrullus Vulgaris")
 
     //Array of fruits images
-    var image = intArrayOf(R.drawable.apple, R.drawable.strawberry, R.drawable.pomegranates, R.drawable.oranges, R.drawable.watermelon)
-
+    var images = arrayOf(R.drawable.oranges, R.drawable.watermelon)
+    var url = URL("https://cdn.forbes.com.mx/2019/09/Manuel-Antonio-Shitterstock.jpg")
 
     override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
         val inflater = context.layoutInflater
@@ -115,20 +123,21 @@ class CustomAdptor(private val context: DialogFragment, private val lista: Array
         val fimage = view1.findViewById<ImageView>(R.id.fimageView)
         var fName = view1.findViewById<TextView>(R.id.fName)
         var fDesc = view1.findViewById<TextView>(R.id.fDesc)
-        fimage.setImageResource(image[p0])
 
+        if(!lista.isEmpty()) {
+            //val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+            //fimage.setImageBitmap(bmp)
+            fimage.setImageResource(images[p0])
+            fName.setText(lista.get(p0).nombre)
+            fDesc.setText(lista.get(p0).lugar)
+            //Log.d(p0.toString(), lista.get(p0).name)
+        }
 
-        fName.setText(lista.get(p0).name)
-        fDesc.setText(lista.get(p0).politic)
-
-
-
-        //Log.d(p0.toString(), lista.get(p0).name)
         return view1
     }
 
     override fun getItem(p0: Int): Any {
-        return image[p0]
+        return lista.get(p0)
     }
 
     override fun getItemId(p0: Int): Long {
@@ -136,6 +145,6 @@ class CustomAdptor(private val context: DialogFragment, private val lista: Array
     }
 
     override fun getCount(): Int {
-        return image.size
+        return lista.size
     }
 }
