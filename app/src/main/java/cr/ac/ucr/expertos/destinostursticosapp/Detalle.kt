@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.activity_resultados.*
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_detalle.*
+import kotlinx.android.synthetic.main.activity_resultados.fullscreen_dialog_close
 
-    class Detalle(val destino: DestinoTuristico) : DialogFragment() {
+class Detalle(val destino: DestinoTuristico) : DialogFragment() {
         override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -32,6 +34,8 @@ import kotlinx.android.synthetic.main.activity_resultados.*
             val lugar = view.findViewById<TextView>(R.id.lugar)
             val descripcion = view.findViewById<TextView>(R.id.descripcion)
 
+
+            Picasso.get().load(destino.imagen).into(fimageView)
             nombre.setText(destino.nombre)
             lugar.setText(destino.lugar)
             descripcion.setText(destino.descripcion)

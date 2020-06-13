@@ -171,7 +171,7 @@ class CustomAdptor(private val context: DialogFragment, private val lista: Array
             Picasso.get().load(lista.get(p0).imagen).into(fimage)
             fName.setText(lista.get(p0).nombre)
             fDesc.setText(lista.get(p0).lugar)
-            Log.d(lista.size.toString(), lista.size.toString())
+            //Log.d(lista.size.toString(), lista.size.toString())
         }
 
         return view1
