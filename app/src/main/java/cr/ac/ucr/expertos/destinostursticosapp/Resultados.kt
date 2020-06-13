@@ -4,6 +4,7 @@ import android.app.PendingIntent.getActivity
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_resultados.*
 import kotlinx.android.synthetic.main.fragment_busqueda.*
 import org.json.JSONArray
@@ -154,8 +156,9 @@ class CustomAdptor(private val context: DialogFragment, private val lista: Array
     //var desc = arrayOf("Malus Domestica", "Fragaria Ananassa ", "Punica Granatum", "Citrus Sinensis", "Citrullus Vulgaris", "Musa Acuminata", "Actinidia Deliciosa", "Solanum Lycopersicum", "Vitis vinifera", "Citrullus Vulgaris")
 
     //Array of fruits images
-    var images = arrayOf(R.drawable.oranges, R.drawable.watermelon)
-    var url = URL("https://cdn.forbes.com.mx/2019/09/Manuel-Antonio-Shitterstock.jpg")
+    //var images = arrayOf(R.drawable.oranges, R.drawable.watermelon)
+    //var url = URL("https://cdn.forbes.com.mx/2019/09/Manuel-Antonio-Shitterstock.jpg")
+    //var url = "https://cdn.forbes.com.mx/2019/09/Manuel-Antonio-Shitterstock.jpg"
 
     override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
         val inflater = context.layoutInflater
@@ -165,12 +168,10 @@ class CustomAdptor(private val context: DialogFragment, private val lista: Array
         var fDesc = view1.findViewById<TextView>(R.id.fDesc)
 
         if(!lista.isEmpty()) {
-            //val bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
-            //fimage.setImageBitmap(bmp)
-            fimage.setImageResource(images[p0])
+            Picasso.get().load(lista.get(p0).imagen).into(fimage)
             fName.setText(lista.get(p0).nombre)
             fDesc.setText(lista.get(p0).lugar)
-            //Log.d(p0.toString(), lista.get(p0).name)
+            Log.d(lista.size.toString(), lista.size.toString())
         }
 
         return view1
