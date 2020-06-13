@@ -19,7 +19,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class Resultados(private val callbackListener: CallbackListener, val destino: String) : DialogFragment() {
+class Resultados(private val callbackListener: CallbackListener, var destino: String, var personas: String, var edad: String, var interes: String) : DialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,7 +42,47 @@ class Resultados(private val callbackListener: CallbackListener, val destino: St
 
         //var listView = findViewById<ListView>(R.id.listview);
 
-        val url = "http://10.0.2.2:8000/api/atractivos/"+destino+"/b/c/d"
+        when (destino) {
+            "Playa" -> destino="1"
+            "Ciudad" -> destino="2"
+            "Montaña" -> destino="3"
+            else -> {
+                destino="4"
+            }
+        }
+
+        when (personas) {
+            "Familia" -> personas="1"
+            "Pareja" -> personas="2"
+            "Amigos" -> personas="3"
+            else -> {
+                personas="4"
+            }
+        }
+
+        when (edad) {
+            "De 18 a 35 años" -> edad="1"
+            "De 36 a 55 años" -> edad="2"
+            else -> {
+                edad="3"
+            }
+        }
+
+        when (interes) {
+            "Cultura" -> interes="1"
+            "Historia" -> interes="2"
+            "Relajación" -> interes="3"
+            "Actualidad" -> interes="4"
+            "Gastronomía" -> interes="5"
+            else -> {
+                interes="6"
+            }
+        }
+
+        //val url = "http://10.0.2.2:8000/api/atractivos/"+destino+"/b/c/d"
+        val url = "https://destinos-turisticos-web.herokuapp.com/api/atractivos/"+destino+"/"+personas+"/"+edad+"/"+interes
+
+
         AsyncTaskHandleJson().execute(url)
     }
 
